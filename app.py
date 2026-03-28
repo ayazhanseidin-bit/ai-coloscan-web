@@ -120,4 +120,7 @@ with tab_analysis:
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.
+    st.markdown("### Статус системы")
+    st.success("Сеть: Подключено")
+    st.write("Модель: YOLOv8-SEG")
+    st.write("База данных: Kvasir-SEG")
