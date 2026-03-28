@@ -10,7 +10,7 @@ st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     
-    /* ЛОГОТИП: сохранение пропорций */
+    /* ЛОГОТИП */
     [data-testid="column"] img {
         max-width: 200px !important;
         object-fit: contain !important;
@@ -40,17 +40,16 @@ st.markdown("""
         box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.5) !important;
     }
 
-    /* ЦЕНТРИРОВАНИЕ ТЕКСТА НАД ФОТО */
+    /* ТЕКСТ НАД ФОТО */
     .img-label {
         text-align: center;
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 8px;
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 12px;
         color: #ffffff;
         display: block;
         width: 100%;
         text-transform: uppercase;
-        letter-spacing: 1px;
     }
 
     /* ФОТО */
@@ -60,6 +59,16 @@ st.markdown("""
         margin: auto;
         display: block;
         border: 1px solid #2e3b4e;
+    }
+
+    /* ДИСКЛЕЙМЕР ПЕРЕД ДАННЫМИ */
+    .estimation-disclaimer {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 15px;
+        font-weight: 600;
+        margin: 20px 0 10px 0;
+        font-style: italic;
     }
 
     /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
@@ -72,9 +81,9 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     .custom-label {
-        color: #94a3b8 !important;
+        color: #3b82f6 !important;
         font-size: 14px !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
         display: block;
         margin-bottom: 5px;
@@ -84,18 +93,6 @@ st.markdown("""
         font-size: 34px !important;
         font-weight: 900 !important;
         display: block;
-    }
-
-    /* DISCLAIMER STYLE */
-    .estimation-disclaimer {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-top: 1px solid #1c2533;
-        font-style: italic;
     }
 
     .block-container { padding-top: 1.5rem !important; }
@@ -122,14 +119,12 @@ with tab_diag:
     if uploaded_file:
         img = Image.open(uploaded_file)
         
-        # Сетка 1x2 для фото
+        # Сетка 1x2 для фото с заголовками
         c1, c2 = st.columns(2)
         with c1:
-            # LABEL 1
             st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            # LABEL 2
             st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
             with st.spinner('Analyzing...'):
                 time.sleep(0.3)
@@ -137,8 +132,8 @@ with tab_diag:
         
         st.error("Diagnostic Result: Polyp Detected (Probability 94.2%)")
 
-        # DISCLAIMER BEFORE DATA
-        st.markdown('<div class="estimation-disclaimer">All data below represents an Estimation of AI for clinical guidance.</div>', unsafe_allow_html=True)
+        # ТЕКСТ ПЕРЕД ДАННЫМИ (Estimation of AI)
+        st.markdown('<div class="estimation-disclaimer">The values below represent an Estimation of AI for clinical support.</div>', unsafe_allow_html=True)
 
         # Карточки результатов
         m1, m2, m3 = st.columns(3)
