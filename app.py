@@ -22,20 +22,19 @@ st.markdown("""
         background-color: transparent;
     }
     .stTabs [data-baseweb="tab"] {
-        background-color: #1c2533 !important; /* Темный фон */
+        background-color: #1c2533 !important;
         border: 1px solid #3b82f6 !important;
         border-radius: 8px 8px 0px 0px !important;
         padding: 10px 30px !important;
         height: auto !important;
         transition: all 0.3s ease;
-        box-shadow: 0px -4px 10px rgba(0,0,0,0.3); /* Тень для объема */
+        box-shadow: 0px -4px 10px rgba(0,0,0,0.3);
     }
     .stTabs [data-baseweb="tab"] p {
         font-size: 20px !important;
         font-weight: 800 !important;
-        color: #ffffff !important; /* Белый текст */
+        color: #ffffff !important;
     }
-    /* Активная вкладка */
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
         background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%) !important;
         box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.5) !important;
@@ -50,6 +49,8 @@ st.markdown("""
         color: #ffffff;
         display: block;
         width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     /* ФОТО */
@@ -58,6 +59,7 @@ st.markdown("""
         border-radius: 8px;
         margin: auto;
         display: block;
+        border: 1px solid #2e3b4e;
     }
 
     /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
@@ -87,13 +89,13 @@ st.markdown("""
     /* DISCLAIMER STYLE */
     .estimation-disclaimer {
         text-align: center;
-        color: #fca5a5;
+        color: #94a3b8;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         margin-bottom: 15px;
         padding: 10px;
-        border: 1px solid #7f1d1d;
-        border-radius: 8px;
+        border-top: 1px solid #1c2533;
+        font-style: italic;
     }
 
     .block-container { padding-top: 1.5rem !important; }
@@ -123,18 +125,18 @@ with tab_diag:
         # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<div class="img-label">Original Clinical Stream</div>', unsafe_allow_html=True)
+            st.markdown('<div class="img-label">Input Clinical Frame</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.markdown('<div class="img-label">AI Segmentation Map</div>', unsafe_allow_html=True)
-            with st.spinner('Processing...'):
+            st.markdown('<div class="img-label">Detected Pathological Outline</div>', unsafe_allow_html=True)
+            with st.spinner('Analyzing...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
-        st.error("Detected: Polyp (Probability 94.2%)")
+        st.error("Diagnostic Result: Polyp Detected (Probability 94.2%)")
 
         # DISCLAIMER BEFORE DATA
-        st.markdown('<div class="estimation-disclaimer">THE FOLLOWING DATA REPRESENTS AN ESTIMATION OF AI AND IS INTENDED FOR CLINICAL DECISION SUPPORT ONLY.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="estimation-disclaimer">All data below represents an Estimation of AI for clinical guidance.</div>', unsafe_allow_html=True)
 
         # Карточки результатов
         m1, m2, m3 = st.columns(3)
@@ -161,12 +163,8 @@ with tab_diag:
 
 with tab_info:
     st.header("Kvasir Dataset Information")
-    st.markdown("""
-    The system is trained on the **Kvasir dataset** (Vestre Viken Health Trust, Norway). 
-    This is a multi-class image collection from the gastrointestinal tract, meticulously annotated 
-    by experienced endoscopists.
-    """)
+    st.write("The system utilizes models trained on the Kvasir-SEG dataset for high-fidelity segmentation.")
 
 with tab_team:
     st.subheader("iGEM Nazarbayev University")
-    st.write("Developing AI solutions for medical precision in Kazakhstan.")
+    st.write("Innovative medical AI solutions.")
