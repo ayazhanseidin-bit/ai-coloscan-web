@@ -125,10 +125,12 @@ with tab_diag:
         # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<div class="img-label">Input Clinical Frame</div>', unsafe_allow_html=True)
+            # LABEL 1
+            st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.markdown('<div class="img-label">Detected Pathological Outline</div>', unsafe_allow_html=True)
+            # LABEL 2
+            st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
             with st.spinner('Analyzing...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
