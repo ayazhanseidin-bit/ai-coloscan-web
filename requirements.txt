@@ -1,1 +1,2 @@
-text streamlit Pillow
+streamlit
+Pillow
