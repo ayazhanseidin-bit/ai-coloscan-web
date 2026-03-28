@@ -2,42 +2,49 @@ import streamlit as st
 from PIL import Image
 import time
 
-# --- НАСТРОЙКА СТИЛЯ (UI/UX) ---
-st.set_page_config(page_title="AI-ColoScan PRO", layout="wide", initial_sidebar_state="expanded")
+# --- CONFIG ---
+st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
-# Кастомный CSS для "крутого" вида
+# Кастомный стиль (убираем лишние отступы и настраиваем цвета)
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; color: #ffffff; }
-    .stMetric { background-color: #161b22; padding: 15px; border-radius: 10px; border: 1px solid #30363d; }
-    .stTabs [data-baseweb="tab-list"] { gap: 8px; }
-    .stTabs [data-baseweb="tab"] { 
-        background-color: #161b22; border-radius: 4px 4px 0 0; color: white; padding: 10px 20px;
+    .main { background-color: #0e1117; color: white; }
+    .stMetric { background-color: #1f2937; padding: 15px; border-radius: 10px; border: 1px dotted #3b82f6; }
+    /* Стиль для области загрузки */
+    div[data-testid="stFileUploader"] {
+        border: 2px dashed #3b82f6;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #161b22;
     }
-    .stTabs [aria-selected="true"] { background-color: #238636 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- БОКОВАЯ ПАНЕЛЬ ---
+# --- SIDEBAR (Только статус) ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2413/2413110.png", width=80)
-    st.title("Система управления")
+    st.title("System Status")
     st.markdown("---")
-    uploaded_file = st.file_uploader("📥 Загрузить снимок (JPG/PNG)", type=['jpg', 'png', 'jpeg'])
-    st.markdown("---")
-    st.write("🛰 **Server Status:** <span style='color: #238636'>Connected</span>", unsafe_allow_html=True)
-    st.write("🧠 **Model:** YOLOv8-SEG (Kvasir)")
+    st.success("🛰 Server: Connected")
+    st.info("🧠 Model: YOLOv8-SEG")
+    st.write("Current version: 2.1.0-beta")
 
-# --- ГЛАВНЫЙ ИНТЕРФЕЙС ---
-st.title("🩺 AI-ColoScan: Интеллектуальный Эндоскопический Ассистент")
+# --- MAIN WINDOW ---
+st.title("🩺 AI-ColoScan: Интеллектуальный Ассистент")
+st.markdown("Загрузите снимок для мгновенного анализа патологий ЖКТ")
 
-# Вкладки для разных разделов проекта
-tab1, tab2, tab3 = st.tabs(["🔍 Анализ в реальном времени", "📊 Метрики обучения", "🧪 О проекте"])
+# 1. ЗАГРУЗКА В ГЛАВНОМ ОКНЕ
+uploaded_file = st.file_uploader("", type=['jpg', 'png', 'jpeg'], help="Drag and drop your endoscopy frames here")
 
-with tab1:
-    if uploaded_file:
-        col1, col2 = st.columns(2)
+st.divider()
+
+if uploaded_file:
+    # Если файл загружен, показываем вкладки и анализ
+    tab1, tab2, tab3 = st.tabs(["🔍 Анализ", "📊 Метрики", "🧪 О проекте"])
+    
+    with tab1:
         img = Image.open(uploaded_file)
+        col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("### Исходный кадр")
@@ -45,41 +52,22 @@ with tab1:
             
         with col2:
             st.markdown("### Обработка ИИ")
-            with st.spinner('Сервер анализирует изображение...'):
-                time.sleep(1) # Имитация задержки сервера
-                # Сюда мы вставим вывод с сервера ребят
-                st.image(img, use_container_width=True) 
-                st.success("Объект обнаружен: Полип (Вероятность 94.2%)")
+            with st.spinner('Связь с сервером...'):
+                time.sleep(1) # Имитация работы
+                st.image(img, use_container_width=True) # Здесь будет маска
+                st.success("Объект обнаружен: Polyp (94.2%)")
 
-        # Метрики под картинками
         st.markdown("---")
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Тип патологии", "Полип", "Аденома")
-        m2.metric("Приблизительный размер", "12.4 мм", "+0.5мм")
-        m3.metric("Уверенность ИИ", "94.2%", "High")
-        m4.metric("Скорость (Latency)", "18ms", "Real-time")
-    else:
-        st.info("Пожалуйста, загрузите снимок в боковой панели для начала анализа.")
+        m1.metric("Тип", "Полип", "Аденома")
+        m2.metric("Размер", "12.4 мм", "+0.5мм")
+        m3.metric("Уверенность", "94.2%")
+        m4.metric("Latency", "18ms")
 
-with tab2:
-    st.header("Результаты обучения (ML Analytics)")
-    st.write("Данные получены из Google Colab и Roboflow.")
+else:
+    # Что видит пользователь, когда ничего не загружено
+    st.info("👆 Начните с загрузки изображения выше, чтобы запустить нейронную сеть.")
     
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.write("#### Матрица ошибок (Confusion Matrix)")
-        # Здесь должен быть скриншот из вашего Colab
-        st.image("https://raw.githubusercontent.com/ultralytics/yolov5/master/data/images/bus.jpg", caption="Пример графика обучения")
-    
-    with col_b:
-        st.write("#### Распределение данных (Roboflow)")
-        st.bar_chart({"Полипы": 2092, "Воспаления": 450, "Норма": 742})
-
-with tab3:
-    st.markdown("""
-    ### iGEM Project: AI-ColoScan
-    Наша миссия — снизить процент пропусков патологий во время колоноскопии.
-    - **Dataset:** Kvasir-SEG (2392 изображения).
-    - **Hardware:** Анализ проводится на удаленном GPU сервере.
-    - **Frontend:** Интерактивный дашборд для врача.
-    """)
+    # Можно добавить красивую инфографику или примеры
+    st.image("https://images.unsplash.com/photo-1576091160550-2173dad99901?auto=format&fit=crop&q=80&w=1000", 
+             caption="Example of Endoscopic Visual Intelligence", use_container_width=True)
