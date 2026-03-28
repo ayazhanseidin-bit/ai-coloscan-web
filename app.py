@@ -60,7 +60,7 @@ st.markdown("""
         display: block;
     }
 
-    /* КАРТОЧКИ С ESTIMATION OF AI */
+    /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
     .custom-card {
         background-color: #1c2533;
         border: 2px solid #3b82f6;
@@ -70,24 +70,30 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     .custom-label {
-        color: #ffffff !important;
-        font-size: 16px !important;
-        font-weight: 800 !important;
-        display: block;
-    }
-    .estimation-text {
-        color: #94a3b8 !important;
-        font-size: 11px !important;
+        color: #94a3b8 !important; /* Softer color for the title */
+        font-size: 14px !important;
+        font-weight: 600 !important;
         text-transform: uppercase;
         letter-spacing: 1px;
         display: block;
-        margin: 2px 0 6px 0;
+        margin-bottom: 5px;
     }
     .custom-value {
         color: #ffffff !important;
         font-size: 34px !important;
         font-weight: 900 !important;
         display: block;
+    }
+
+    /* DISCLAIMER STYLE */
+    .estimation-disclaimer {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 14px;
+        font-style: italic;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px solid #1c2533;
     }
 
     .block-container { padding-top: 1.5rem !important; }
@@ -117,37 +123,37 @@ with tab_diag:
         # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<div class="img-label">Original Image</div>', unsafe_allow_html=True)
+            st.markdown('<div class="img-label">Original Clinical Stream</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.markdown('<div class="img-label">AI Processing</div>', unsafe_allow_html=True)
+            st.markdown('<div class="img-label">AI Segmentation Map</div>', unsafe_allow_html=True)
             with st.spinner('Processing...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
         st.error("Detected: Polyp (Probability 94.2%)")
 
-        # Карточки результатов
+        # ESTIMATION TEXT BEFORE DATA
+        st.markdown('<div class="estimation-disclaimer">The following values represent an Estimation of AI and are intended for clinical support.</div>', unsafe_allow_html=True)
+
+        # Карточки результатов с улучшенными названиями
         m1, m2, m3 = st.columns(3)
         with m1:
             st.markdown('''
                 <div class="custom-card">
-                    <span class="custom-label">OBJECT</span>
-                    <span class="estimation-text">Estimation of AI</span>
+                    <span class="custom-label">Finding Type</span>
                     <span class="custom-value">POLYP</span>
                 </div>''', unsafe_allow_html=True)
         with m2:
             st.markdown('''
                 <div class="custom-card">
-                    <span class="custom-label">EST. SIZE</span>
-                    <span class="estimation-text">Estimation of AI</span>
+                    <span class="custom-label">Dimensions</span>
                     <span class="custom-value">12.4 mm</span>
                 </div>''', unsafe_allow_html=True)
         with m3:
             st.markdown('''
                 <div class="custom-card">
-                    <span class="custom-label">CONFIDENCE</span>
-                    <span class="estimation-text">Estimation of AI</span>
+                    <span class="custom-label">Certainty Score</span>
                     <span class="custom-value">94.2%</span>
                 </div>''', unsafe_allow_html=True)
     else:
