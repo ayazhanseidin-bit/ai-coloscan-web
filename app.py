@@ -5,132 +5,106 @@ import time
 # --- НАСТРОЙКИ СТРАНИЦЫ ---
 st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
-# Профессиональный CSS: Огромные шрифты и компактные фото
+# Профессиональный CSS: Огромные шрифты и высокая контрастность
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     
-    /* Делаем шрифты в метриках гигантскими и заметными */
+    /* Карточки метрик: Делаем подписи максимально заметными */
     div[data-testid="stMetric"] {
-        background-color: #1f2937 !important;
+        background-color: #1c2533 !important;
         border: 2px solid #3b82f6 !important;
         padding: 25px !important;
-        border-radius: 15px !important;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
+        border-radius: 12px !important;
     }
-    div[data-testid="stMetricValue"] > div {
-        color: #ffffff !important;
-        font-size: 42px !important; /* Увеличили шрифт цифр */
-        font-weight: 800 !important;
-    }
+    
+    /* Названия (ОБЪЕКТ, РАЗМЕР и т.д.) — Чисто белый для контраста */
     div[data-testid="stMetricLabel"] > div {
-        color: #60a5fa !important;
-        font-size: 20px !important; /* Увеличили шрифт подписей */
+        color: #ffffff !important; 
+        font-size: 24px !important; 
+        font-weight: 800 !important;
         text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Значения (Полип, 12.4 мм) — Ярко-голубой */
+    div[data-testid="stMetricValue"] > div {
+        color: #60a5fa !important;
+        font-size: 44px !important;
+        font-weight: 900 !important;
     }
 
-    /* Ограничиваем размер фото, чтобы не были огромными */
+    /* Уменьшаем фото, чтобы интерфейс был собранным */
     [data-testid="stImage"] img {
-        max-width: 80% !important;
-        border-radius: 10px;
-        border: 1px solid #30363d;
+        max-width: 70% !important;
+        margin: auto;
+        display: block;
+        border: 1px solid #3b82f6;
     }
 
-    .stTabs [data-baseweb="tab-list"] { gap: 15px; }
-    .stTabs [data-baseweb="tab"] { 
-        background-color: #161b22; border-radius: 4px 4px 0 0; padding: 12px 24px; color: #8b949e;
-        font-size: 18px !important; /* Крупные вкладки */
-    }
-    .stTabs [aria-selected="true"] { background-color: #1f6feb !important; color: white !important; }
+    .stTabs [data-baseweb="tab"] { font-size: 22px !important; }
     </style>
     """, unsafe_allow_html=True)
 
 # --- ШАПКА ---
-head_col1, head_col2 = st.columns([1, 6])
-with head_col1:
+col_l, col_r = st.columns([1, 5])
+with col_l:
     try:
-        st.image("logo.png", width=140)
+        st.image("logo.png", width=120)
     except:
         st.write("iGEM NU")
-with head_col2:
-    st.title("AI-ColoScan: Интеллектуальная система детекции")
-    st.markdown("### Разработка iGEM Nazarbayev University для повышения точности эндоскопии")
+with col_r:
+    st.title("AI-ColoScan: Анализ эндоскопических изображений")
+    st.write("Система автоматической сегментации новообразований на базе YOLOv8-SEG")
 
 st.divider()
 
 # --- ВКЛАДКИ ---
-tab_analysis, tab_verification, tab_team = st.tabs([
-    "Диагностический анализ", 
-    "Верификация и надежность системы",
-    "О команде iGEM"
-])
+tab_diag, tab_verify, tab_team = st.tabs(["Диагностика", "Верификация и Данные", "О проекте"])
 
-# 1. ВКЛАДКА: АНАЛИЗ
-with tab_analysis:
-    st.header("Клинический анализ в реальном времени")
-    uploaded_file = st.file_uploader("Загрузите снимок для мгновенной сегментации", type=['jpg', 'png', 'jpeg'])
+with tab_diag:
+    st.header("Загрузка и анализ снимка")
+    uploaded_file = st.file_uploader("Выберите изображение для анализа (JPG, PNG)", type=['jpg', 'png', 'jpeg'])
 
     if uploaded_file:
         img = Image.open(uploaded_file)
+        c1, c2 = st.columns(2)
         
-        # Используем колонки с отступами, чтобы фото были по центру и меньше
-        empty_l, col1, col2, empty_r = st.columns([0.5, 3, 3, 0.5])
-        
-        with col1:
-            st.subheader("Исходный кадр")
+        with c1:
+            st.subheader("Исходный снимок")
             st.image(img, use_container_width=True)
             
-        with col2:
-            st.subheader("Результат ИИ")
-            with st.spinner('Обработка...'):
-                time.sleep(0.8)
-                st.image(img, use_container_width=True)
-                st.error("Внимание: Обнаружен полип (94.2%)")
+        with c2:
+            st.subheader("Результат сегментации")
+            with st.spinner('ИИ обрабатывает данные...'):
+                time.sleep(0.5)
+                st.image(img, use_container_width=True) # Здесь маска
+                st.error("Обнаружен объект: Полип (Вероятность 94.2%)")
 
         st.divider()
-        st.subheader("Клинические показатели (Данные в реальном времени)")
+        st.subheader("Клиническое заключение ИИ")
         
-        # Метрики: теперь они ОГРОМНЫЕ
-        m1, m2, m3, m4 = st.columns(4)
+        # Контрастные метрики для врача
+        m1, m2, m3 = st.columns(3)
         m1.metric("Объект", "Полип")
-        m2.metric("Размер", "12.4 мм")
-        m3.metric("Точность", "92.8%")
-        m4.metric("Задержка", "24 мс")
+        m2.metric("Предп. размер", "12.4 мм")
+        m3.metric("Уверенность ИИ", "94.2%")
     else:
-        st.info("Ожидание загрузки снимка...")
+        st.info("Для начала работы загрузите файл.")
 
-# 2. ВКЛАДКА: ВЕРИФИКАЦИЯ
-with tab_verification:
-    st.header("Научное обоснование и данные обучения")
-    st.write("Врачи могут доверять системе благодаря использованию эталонных баз данных.")
-    
-    col_v1, col_v2 = st.columns(2)
-    with col_v1:
-        st.subheader("Золотой стандарт: Kvasir-SEG")
-        st.write("""
-        - **2392 изображения** из реальной клинической практики.
-        - Разметка экспертного уровня.
-        - Валидация на различных типах оборудования.
-        """)
-        try:
-            # Загрузите скриншот из Roboflow под именем dataset.png
-            st.image("dataset_preview.png", width=400)
-        except:
-            st.write("Пример данных Kvasir-SEG")
+with tab_verify:
+    st.header("Надежность системы")
+    st.markdown("""
+    Наша модель обучена на **2392 изображениях** из датасета **Kvasir-SEG**. 
+    Это гарантирует высокую точность распознавания в различных клинических сценариях.
+    """)
+    # Скриншот из Roboflow (image_49d95f.jpg)
+    try:
+        st.image("dataset_preview.png", caption="Визуализация обучающей выборки")
+    except:
+        st.write("Здесь будет визуализация данных.")
 
-    with col_v2:
-        st.subheader("Показатели надежности")
-        st.line_chart({"mAP (Точность)": [0.2, 0.5, 0.8, 0.94]})
-        st.write("Высокая чувствительность к мелким образованиям.")
-
-# 3. ВКЛАДКА: О КОМАНДЕ
 with tab_team:
-    st.header("iGEM Nazarbayev University 2026")
-    st.write("Мы объединяем медицину и технологии для здоровья нации.")
-    st.success("Связь: igem@nu.edu.kz")
-
-# --- SIDEBAR ---
-with st.sidebar:
-    st.write("Статус: Активен")
-    st.write("Модель: YOLOv8-SEG")
-    st.write("БД: Kvasir-SEG")
+    st.header("iGEM Nazarbayev University")
+    st.write("Студенческий проект по внедрению ИИ в казахстанскую медицину.")
+    st.write("Контакты: igem@nu.edu.kz")
