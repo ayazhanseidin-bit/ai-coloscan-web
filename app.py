@@ -39,6 +39,15 @@ if uploaded_file is not None:
     m3.metric("Action", "Biopsy Recommended")
 
 else:
-    # Текст, который видит пользователь до загрузки фото
-    st.info("Please upload a medical image from the sidebar to begin analysis.")
-    st.image("https://images.unsplash.com/photo-1576091160550-2173dad99901?auto=format&fit=crop&w=1000&q=80", caption="Standard Endoscopy Setup")
+    # Текст для главной страницы, когда ничего не загружено
+    st.info("👋 Welcome! Please upload a colonoscopy frame in the sidebar to test the AI.")
+    
+    st.subheader("Why AI-ColoScan?")
+    st.markdown("""
+    * **Early Detection:** Helps identify polyps that are often missed by the human eye.
+    * **Explainable AI:** Our system uses Grad-CAM heatmaps to show exactly *where* the AI is looking.
+    * **Low Cost:** Compatible with existing endoscopy hardware.
+    """)
+    
+    # Добавим видео или картинку из интернета, которая точно работает
+    st.image("https://cdn.pixabay.com/photo/2016/11/23/17/56/cells-1854060_1280.jpg", caption="Microscopic view of intestinal tissues")
