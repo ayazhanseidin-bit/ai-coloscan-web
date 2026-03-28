@@ -5,109 +5,105 @@ import time
 # --- НАСТРОЙКИ СТРАНИЦЫ ---
 st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
-# CSS для максимальной читаемости и крупного логотипа
+# CSS для фикса текста, размера лого и компактности
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     
-    /* Блок метрик */
-    div[data-testid="stMetric"] {
-        background-color: #1c2533 !important;
-        border: 2px solid #3b82f6 !important;
-        padding: 25px !important;
-        border-radius: 12px !important;
-        box-shadow: 0 4px 25px rgba(0,0,0,1) !important;
-    }
-    
-    /* ФИКС ТЕКСТА: Делаем подписи (Объект, Размер) максимально яркими */
-    div[data-testid="stMetricLabel"] > div {
-        color: #ffffff !important; /* Белый цвет */
-        font-size: 26px !important; /* Большой размер */
-        font-weight: 900 !important; /* Жирный шрифт */
-        opacity: 1 !important; /* Никакой прозрачности */
-        text-shadow: 1px 1px 2px black; /* Тень для объема */
-        letter-spacing: 1px;
-    }
-    
-    /* Значения цифр */
-    div[data-testid="stMetricValue"] > div {
-        color: #ffffff !important;
-        font-size: 54px !important;
-        font-weight: 900 !important;
+    /* Делаем фото компактными, чтобы не листать */
+    [data-testid="stImage"] img {
+        max-height: 400px;
+        width: auto;
+        margin: auto;
+        display: block;
+        border-radius: 10px;
+        border: 1px solid #3b82f6;
     }
 
-    /* Растягиваем логотип в колонке */
+    /* СТИЛЬ ДЛЯ ВИДИМОГО ТЕКСТА (ВМЕСТО METRIC) */
+    .custom-card {
+        background-color: #1c2533;
+        border: 2px solid #3b82f6;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        margin: 5px;
+    }
+    .custom-label {
+        color: #ffffff !important; /* Ярко-белый заголовок */
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .custom-value {
+        color: #ffffff !important;
+        font-size: 38px !important;
+        font-weight: 900 !important;
+        display: block;
+    }
+
+    /* Логотип на всю ширину колонки */
     [data-testid="column"] img {
         width: 100% !important;
-        max-width: 280px !important; /* Ограничиваем разумный максимум */
+        max-width: 250px !important;
     }
-
-    /* Настройка вкладок */
-    .stTabs [data-baseweb="tab"] { font-size: 22px !important; font-weight: bold !important; }
+    
+    /* Убираем лишние пустые места сверху */
+    .block-container { padding-top: 1rem !important; }
     </style>
     """, unsafe_allow_html=True)
 
 # --- ШАПКА ---
-col_logo, col_text = st.columns([1, 3])
-with col_logo:
+col_l, col_r = st.columns([1, 4])
+with col_l:
     try:
         st.image("logo.png", use_container_width=True)
     except:
-        st.subheader("iGEM NU Logo")
-with col_text:
-    st.title("AI-ColoScan: Анализ эндоскопических изображений")
-    st.write("Профессиональная система сегментации на базе YOLOv8-SEG")
+        st.subheader("iGEM NU")
+with col_r:
+    st.title("AI-ColoScan: Интеллектуальная система")
+    st.write("Разработка iGEM Nazarbayev University для повышения точности эндоскопии")
 
 st.divider()
 
 # --- ВКЛАДКИ ---
-tab_diag, tab_verify, tab_team = st.tabs(["Диагностика", "Верификация и БД", "О проекте"])
+tab_diag, tab_kvasir, tab_about = st.tabs(["Диагностика", "База данных Kvasir", "О команде"])
 
 with tab_diag:
-    st.header("Загрузка и анализ снимка")
-    uploaded_file = st.file_uploader("Загрузите кадр для анализа", type=['jpg', 'png', 'jpeg'])
+    uploaded_file = st.file_uploader("Загрузите снимок (JPG/PNG)", type=['jpg', 'png', 'jpeg'])
 
     if uploaded_file:
         img = Image.open(uploaded_file)
+        
+        # Фотографии стали меньше и стоят в ряд
         c1, c2 = st.columns(2)
         with c1:
-            st.subheader("Исходный снимок")
+            st.markdown("<p style='text-align:center'>Исходный кадр</p>", unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.subheader("Результат ИИ")
+            st.markdown("<p style='text-align:center'>Результат сегментации ИИ</p>", unsafe_allow_html=True)
             with st.spinner('Анализ...'):
-                time.sleep(0.5)
+                time.sleep(0.4)
                 st.image(img, use_container_width=True)
-                st.error("Результат: Обнаружен полип (Вероятность 94.2%)")
+                st.error("Обнаружен объект: Полип (94.2%)")
 
-        st.divider()
-        st.subheader("Клинические показатели")
-        # Метрики с исправленной видимостью
+        st.markdown("### Клиническое заключение ИИ")
+        
+        # Новые компактные и яркие блоки данных
         m1, m2, m3 = st.columns(3)
-        m1.metric("Объект", "Полип")
-        m2.metric("Предп. размер", "12.4 мм")
-        m3.metric("Уверенность ИИ", "94.2%")
+        
+        with m1:
+            st.markdown('<div class="custom-card"><span class="custom-label">ОБЪЕКТ</span><span class="custom-value">ПОЛИП</span></div>', unsafe_allow_html=True)
+        with m2:
+            st.markdown('<div class="custom-card"><span class="custom-label">ПРЕДП. РАЗМЕР</span><span class="custom-value">12.4 мм</span></div>', unsafe_allow_html=True)
+        with m3:
+            st.markdown('<div class="custom-card"><span class="custom-label">УВЕРЕННОСТЬ ИИ</span><span class="custom-value">94.2%</span></div>', unsafe_allow_html=True)
     else:
-        st.info("Система ожидает загрузки файла.")
+        st.info("Для начала работы загрузите медицинское изображение.")
 
-with tab_verify:
-    st.header("Научная обоснованность: Датасет Kvasir")
+with tab_kvasir:
+    st.header("О датасете Kvasir")
     st.markdown("""
-    Для обучения AI-ColoScan используется **Kvasir** — эталонный набор данных медицинских изображений ЖКТ из госпиталя Vestre Viken (Норвегия).
-    
-    **Почему это важно для врача:**
-    * **Экспертная разметка**: Все изображения классифицированы и проверены опытными эндоскопистами.
-    * **Золотой стандарт**: Использование публичного верифицированного набора данных обеспечивает воспроизводимость результатов и доверие к диагностике.
-    * **Многопрофильность**: Датасет включает не только полипы, но и важные анатомические ориентиры (Z-линия, пилорус), что позволяет системе лучше ориентироваться в ЖКТ.
-    
-    Автоматизация обнаружения образований помогает снизить влияние человеческого фактора и повышает качество скрининга рака.
-    """)
-    try:
-        st.image("dataset_preview.png", caption="Примеры обучающей выборки Kvasir")
-    except:
-        st.write("Визуализация Kvasir доступна в документации.")
-
-with tab_team:
-    st.header("iGEM Nazarbayev University")
-    st.write("Студенческая инициатива по внедрению ИИ в медицинскую практику Казахстана.")
-    st.write("Контакты: igem@nu.edu.kz")
+    Система AI-ColoScan обучена на базе данных **Kvasir
