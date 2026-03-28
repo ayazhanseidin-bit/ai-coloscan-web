@@ -125,11 +125,11 @@ with tab_diag:
         # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
-            # ADDED: Label for the first photo
+            # ТЕКСТ НАД ПЕРВЫМ ФОТО
             st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            # ADDED: Label for the second photo
+            # ТЕКСТ НАД ВТОРЫМ ФОТО (ИИ)
             st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
             with st.spinner('Analyzing...'):
                 time.sleep(0.3)
