@@ -70,11 +70,10 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     .custom-label {
-        color: #94a3b8 !important; /* Softer color for the title */
+        color: #94a3b8 !important;
         font-size: 14px !important;
         font-weight: 600 !important;
         text-transform: uppercase;
-        letter-spacing: 1px;
         display: block;
         margin-bottom: 5px;
     }
@@ -88,12 +87,13 @@ st.markdown("""
     /* DISCLAIMER STYLE */
     .estimation-disclaimer {
         text-align: center;
-        color: #94a3b8;
+        color: #fca5a5;
         font-size: 14px;
-        font-style: italic;
+        font-weight: 600;
         margin-bottom: 15px;
         padding: 10px;
-        border-bottom: 1px solid #1c2533;
+        border: 1px solid #7f1d1d;
+        border-radius: 8px;
     }
 
     .block-container { padding-top: 1.5rem !important; }
@@ -133,10 +133,10 @@ with tab_diag:
         
         st.error("Detected: Polyp (Probability 94.2%)")
 
-        # ESTIMATION TEXT BEFORE DATA
-        st.markdown('<div class="estimation-disclaimer">The following values represent an Estimation of AI and are intended for clinical support.</div>', unsafe_allow_html=True)
+        # DISCLAIMER BEFORE DATA
+        st.markdown('<div class="estimation-disclaimer">THE FOLLOWING DATA REPRESENTS AN ESTIMATION OF AI AND IS INTENDED FOR CLINICAL DECISION SUPPORT ONLY.</div>', unsafe_allow_html=True)
 
-        # Карточки результатов с улучшенными названиями
+        # Карточки результатов
         m1, m2, m3 = st.columns(3)
         with m1:
             st.markdown('''
@@ -165,9 +165,6 @@ with tab_info:
     The system is trained on the **Kvasir dataset** (Vestre Viken Health Trust, Norway). 
     This is a multi-class image collection from the gastrointestinal tract, meticulously annotated 
     by experienced endoscopists.
-    
-    The dataset includes anatomical landmarks, pathological findings (polyps, esophagitis, ulcerative colitis), 
-    and images related to endoscopic procedures. This high-quality data ensures the reliability of AI predictions.
     """)
 
 with tab_team:
