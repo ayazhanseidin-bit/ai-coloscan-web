@@ -5,55 +5,61 @@ import time
 # --- НАСТРОЙКИ СТРАНИЦЫ ---
 st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
-# Профессиональный CSS: Огромные шрифты и высокая контрастность
+# Профессиональный CSS: Исправляем видимость текста и логотип
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     
-    /* Карточки метрик: Делаем подписи максимально заметными */
+    /* Карточки метрик: Белый текст для всего */
     div[data-testid="stMetric"] {
         background-color: #1c2533 !important;
         border: 2px solid #3b82f6 !important;
         padding: 25px !important;
         border-radius: 12px !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.8) !important;
     }
     
-    /* Названия (ОБЪЕКТ, РАЗМЕР и т.д.) — Чисто белый для контраста */
+    /* Названия (ОБЪЕКТ, РАЗМЕР, УВЕРЕННОСТЬ ИИ) — Теперь ярко-белые и крупные */
     div[data-testid="stMetricLabel"] > div {
         color: #ffffff !important; 
-        font-size: 24px !important; 
+        font-size: 26px !important; 
         font-weight: 800 !important;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
+        opacity: 1 !important; /* Убираем прозрачность */
     }
     
-    /* Значения (Полип, 12.4 мм) — Ярко-голубой */
+    /* Значения цифр — Возвращаем белый цвет */
     div[data-testid="stMetricValue"] > div {
-        color: #60a5fa !important;
-        font-size: 44px !important;
+        color: #ffffff !important;
+        font-size: 48px !important;
         font-weight: 900 !important;
     }
 
-    /* Уменьшаем фото, чтобы интерфейс был собранным */
+    /* Логотип побольше */
+    [data-testid="stSidebar"] img {
+        max-width: 100% !important;
+    }
+
+    /* Компактные фото */
     [data-testid="stImage"] img {
-        max-width: 70% !important;
+        max-width: 75% !important;
         margin: auto;
         display: block;
         border: 1px solid #3b82f6;
     }
-
-    .stTabs [data-baseweb="tab"] { font-size: 22px !important; }
     </style>
     """, unsafe_allow_html=True)
 
 # --- ШАПКА ---
-col_l, col_r = st.columns([1, 5])
-with col_l:
+col_logo, col_text = st.columns([1, 4])
+with col_logo:
     try:
-        st.image("logo.png", width=120)
+        # Увеличили логотип до 200
+        st.image("logo.png", width=200)
     except:
-        st.write("iGEM NU")
-with col_r:
+        st.subheader("iGEM NU")
+with col_text:
     st.title("AI-ColoScan: Анализ эндоскопических изображений")
     st.write("Система автоматической сегментации новообразований на базе YOLOv8-SEG")
 
@@ -64,7 +70,7 @@ tab_diag, tab_verify, tab_team = st.tabs(["Диагностика", "Вериф�
 
 with tab_diag:
     st.header("Загрузка и анализ снимка")
-    uploaded_file = st.file_uploader("Выберите изображение для анализа (JPG, PNG)", type=['jpg', 'png', 'jpeg'])
+    uploaded_file = st.file_uploader("Выберите изображение для анализа", type=['jpg', 'png', 'jpeg'])
 
     if uploaded_file:
         img = Image.open(uploaded_file)
@@ -78,13 +84,13 @@ with tab_diag:
             st.subheader("Результат сегментации")
             with st.spinner('ИИ обрабатывает данные...'):
                 time.sleep(0.5)
-                st.image(img, use_container_width=True) # Здесь маска
+                st.image(img, use_container_width=True)
                 st.error("Обнаружен объект: Полип (Вероятность 94.2%)")
 
         st.divider()
         st.subheader("Клиническое заключение ИИ")
         
-        # Контрастные метрики для врача
+        # Полностью белые контрастные метрики
         m1, m2, m3 = st.columns(3)
         m1.metric("Объект", "Полип")
         m2.metric("Предп. размер", "12.4 мм")
@@ -92,19 +98,16 @@ with tab_diag:
     else:
         st.info("Для начала работы загрузите файл.")
 
+# --- ОСТАЛЬНЫЕ ВКЛАДКИ ---
 with tab_verify:
     st.header("Надежность системы")
-    st.markdown("""
-    Наша модель обучена на **2392 изображениях** из датасета **Kvasir-SEG**. 
-    Это гарантирует высокую точность распознавания в различных клинических сценариях.
-    """)
-    # Скриншот из Roboflow (image_49d95f.jpg)
+    st.write("Обучение проведено на датасете Kvasir-SEG (2392 снимка).")
     try:
-        st.image("dataset_preview.png", caption="Визуализация обучающей выборки")
+        st.image("dataset_preview.png", caption="Визуализация обучающей выборки Kvasir-SEG")
     except:
-        st.write("Здесь будет визуализация данных.")
+        st.write("Визуализация данных доступна в репозитории проекта.")
 
 with tab_team:
-    st.header("iGEM Nazarbayev University")
+    st.header("Команда iGEM Nazarbayev University")
     st.write("Студенческий проект по внедрению ИИ в казахстанскую медицину.")
-    st.write("Контакты: igem@nu.edu.kz")
+    st.write("Связь: igem@nu.edu.kz")
