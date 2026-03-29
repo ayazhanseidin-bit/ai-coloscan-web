@@ -50,10 +50,10 @@ st.markdown("""
 
     /* СТИЛЬ ДЛЯ ВЫТЯНУТОГО ФОТО КОМАНДЫ */
     .team-img img {
-        max-height: 600px !important; /* Увеличили высоту */
+        max-height: 700px !important; /* Увеличено для высоты */
         object-fit: cover !important;
         border-radius: 12px;
-        border: 1px solid #3b82f6;
+        border: 2px solid #3b82f6;
     }
 
     /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
@@ -85,49 +85,42 @@ with col_logo:
     except:
         st.write("iGEM NU")
 with col_title:
-    st.title("AI-ColoScan: Clinical Analysis System")
-    st.write("Precision diagnostic support powered by Kvasir dataset")
+    st.title("AI-ColoScan: Система клинического анализа")
+    st.write("Поддержка высокоточной диагностики на базе ИИ")
 
-# --- ВКЛАДКИ ---
-tab_diag, tab_info, tab_team = st.tabs(["DIAGNOSTICS", "KVASIR DATABASE", "ABOUT TEAM"])
+# --- ВКЛАДКИ (Теперь только две) ---
+tab_diag, tab_team = st.tabs(["ДИАГНОСТИКА", "О КОМАНДЕ"])
 
 with tab_diag:
-    uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'png', 'jpeg'], label_visibility="collapsed")
+    uploaded_file = st.file_uploader("Загрузить изображение", type=['jpg', 'png', 'jpeg'], label_visibility="collapsed")
     if uploaded_file:
         img = Image.open(uploaded_file)
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
+            st.markdown('<div class="img-label">Исходное фото</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
-            with st.spinner('Analyzing...'):
+            st.markdown('<div class="img-label">Обработка ИИ</div>', unsafe_allow_html=True)
+            with st.spinner('Анализ...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
-        st.error("Diagnostic Result: Polyp Detected (Probability 94.2%)")
-        st.markdown('<div class="estimation-disclaimer">All data below represents an Estimation of AI for clinical guidance.</div>', unsafe_allow_html=True)
+        st.error("Результат диагностики: Обнаружен полип (Вероятность 94.2%)")
+        st.markdown('<div class="estimation-disclaimer">Все данные ниже являются оценочными данными ИИ для клинического руководства.</div>', unsafe_allow_html=True)
 
+        # Обновленные карточки на русском
         m1, m2, m3 = st.columns(3)
         with m1:
-            st.markdown('<div class="custom-card"><span class="custom-label">Finding Type</span><span class="custom-value">POLYP</span></div>', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Тип находки</span><span class="custom-value">ПОЛИП</span></div>', unsafe_allow_html=True)
         with m2:
-            st.markdown('<div class="custom-card"><span class="custom-label">Dimensions</span><span class="custom-value">12.4 mm</span></div>', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Размер</span><span class="custom-value">12.4 мм</span></div>', unsafe_allow_html=True)
         with m3:
-            st.markdown('<div class="custom-card"><span class="custom-label">Certainty Score</span><span class="custom-value">94.2%</span></div>', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Относительный размер</span><span class="custom-value">94.2%</span></div>', unsafe_allow_html=True)
     else:
-        st.info("Please upload an endoscopic image to start the analysis.")
-
-with tab_info:
-    st.header("О датасете Kvasir")
-    st.markdown("""
-    **Kvasir** — это передовой мультиклассовый набор данных для обнаружения заболеваний ЖКТ. 
-    Данные собраны в Vestre Viken Health Trust (Норвегия) и верифицированы опытными врачами-эндоскопистами.
-    """)
-    st.info("Dataset Source: Vestre Viken Health Trust & Oslo University Hospital.")
+        st.info("Пожалуйста, загрузите эндоскопическое изображение для начала анализа.")
 
 with tab_team:
-    st.header("iGEM Nazarbayev University Team")
+    st.header("Команда iGEM Nazarbayev University")
     text_col, photo_col = st.columns([1.5, 1])
 
     with text_col:
@@ -136,12 +129,12 @@ with tab_team:
         
         **Биологическая научная сборная iGEM Назарбаев Университета (НУ)** — это команда молодых ученых, представляющая Казахстан и Центральную Азию на международной арене уже 12 лет. За это время мы завоевали **6 золотых**, **2 серебряные** и **2 бронзовые медали**, подтверждая высокий уровень отечественной науки.
         
-        В 2026 году мы представляем наш проект на международном финале **iGEM в Париже**, соревнуясь с более чем 400 ведущими университетами мира.
+        В 2024 году мы представляем наш проект на международном финале **iGEM в Париже**, соревнуясь с более чем 400 ведущими университетами мира.
         
         **Разработка:** Мы создаем доступный биосенсор для ранней диагностики колоректального рака на основе генетически модифицированной бактерии *E. coli*. Технология выявляет путресцин — ключевой биомаркер, концентрация которого резко возрастает при развитии опухоли. Наша цель — сделать высокоточную диагностику простой, быстрой и экономически эффективной.
 
         ### Контакты
-        По вопросам сотрудничества и техническим деталям проекта вы можете связаться с нами напрямую:
+        По техническим деталям проекта вы можете связаться с нами напрямую:
         
         **Email:** [igem@nu.edu.kz](mailto:igem@nu.edu.kz)
         """)
@@ -151,6 +144,7 @@ with tab_team:
     with photo_col:
         st.markdown('<div class="team-img">', unsafe_allow_html=True)
         try:
+            # Здесь будет ваше фото, вытянутое по вертикали
             st.image("team_photo.png", use_container_width=True)
         except:
             st.warning("Добавьте файл team_photo.png в папку проекта")
