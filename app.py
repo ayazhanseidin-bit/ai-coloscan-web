@@ -105,7 +105,7 @@ with tab_diag:
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
-        st.error("Результат диагностики: Обнаружен полип (Вероятность 94.2%)")
+        st.error("Результат диагностики: Обнаружен полип")
         st.markdown('<div class="estimation-disclaimer">Все данные ниже являются оценочными данными ИИ для клинического руководства.</div>', unsafe_allow_html=True)
 
         # Обновленные карточки на русском
