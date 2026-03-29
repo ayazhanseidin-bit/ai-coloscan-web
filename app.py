@@ -125,48 +125,62 @@ with tab_diag:
         # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
-            # ТЕКСТ НАД ПЕРВЫМ ФОТО
             st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            # ТЕКСТ НАД ВТОРЫМ ФОТО (ИИ)
             st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
             with st.spinner('Analyzing...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
         st.error("Diagnostic Result: Polyp Detected (Probability 94.2%)")
-
-        # DISCLAIMER BEFORE DATA
         st.markdown('<div class="estimation-disclaimer">All data below represents an Estimation of AI for clinical guidance.</div>', unsafe_allow_html=True)
 
-        # Карточки результатов
         m1, m2, m3 = st.columns(3)
         with m1:
-            st.markdown('''
-                <div class="custom-card">
-                    <span class="custom-label">Finding Type</span>
-                    <span class="custom-value">POLYP</span>
-                </div>''', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Finding Type</span><span class="custom-value">POLYP</span></div>', unsafe_allow_html=True)
         with m2:
-            st.markdown('''
-                <div class="custom-card">
-                    <span class="custom-label">Dimensions</span>
-                    <span class="custom-value">12.4 mm</span>
-                </div>''', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Dimensions</span><span class="custom-value">12.4 mm</span></div>', unsafe_allow_html=True)
         with m3:
-            st.markdown('''
-                <div class="custom-card">
-                    <span class="custom-label">Certainty Score</span>
-                    <span class="custom-value">94.2%</span>
-                </div>''', unsafe_allow_html=True)
+            st.markdown('<div class="custom-card"><span class="custom-label">Certainty Score</span><span class="custom-value">94.2%</span></div>', unsafe_allow_html=True)
     else:
         st.info("Please upload an endoscopic image to start the analysis.")
 
 with tab_info:
-    st.header("Kvasir Dataset Information")
-    st.write("The system utilizes models trained on the Kvasir-SEG dataset for high-fidelity segmentation.")
+    st.header("О датасете Kvasir")
+    st.markdown("""
+    **Kvasir** — это передовой мультиклассовый набор данных для обнаружения заболеваний ЖКТ. 
+    Данные собраны в Vestre Viken Health Trust (Норвегия) и верифицированы опытными врачами-эндоскопистами.
+    
+    ### Состав и структура данных:
+    * **Источник:** Данные собраны в Vestre Viken Health Trust (Норвегия) и аннотированы опытными врачами-эндоскопистами.
+    * **Классификация:** Датасет включает в себя 3 типа анатомических ориентиров (Z-line, Pylorus, Cecum) и 3 клинически важных находки (Polyp, Esophagitis, Ulcerative Colitis).
+    * **Удаление полипов:** Отдельные категории для контроля качества процедур удаления (EMR), такие как "окрашенные и поднятые полипы".
+    """)
+    st.info("Dataset Source: Vestre Viken Health Trust & Oslo University Hospital.")
 
 with tab_team:
-    st.subheader("iGEM Nazarbayev University")
-    st.write("Innovative medical AI solutions.")
+    st.header("iGEM Nazarbayev University Team")
+    
+    st.markdown("""
+    **Биологическая научная сборная iGEM Назарбаев Университета (НУ)** предлагает рассмотреть возможность сотрудничества и спонсорской поддержки нашего проекта в области синтетической биологии.
+
+    ### Международное признание
+    С **28 по 31 октября** наша команда будет представлять Казахстан на международном финале **iGEM в Париже** — одном из самых престижных мировых соревнований в сфере биологии, объединяющем более 400 команд ведущих университетов мира. 
+    
+    На протяжении **12 лет** сборная НУ ежегодно представляет страну и Центральную Азию на международной арене, завоевав:
+    * **6 золотых медалей**
+    * **2 серебряные медали**
+    * **2 бронзовые медали**
+
+    ### Наш проект 2024
+    В этом году мы разрабатываем **доступный биосенсор** для диагностики колоректального рака на основе генетически модифицированной бактерии *E. coli*. 
+    
+    * **Технология:** выявление путресцина – биомаркера, концентрация которого значительно повышается при развитии опухоли. 
+    * **Цель:** создание простой, быстрой и экономически эффективной системы ранней диагностики.
+
+    ### Спонсорство
+    Для реализации следующего этапа проекта, включая участие в финале и дальнейшую разработку, нам необходима поддержка стратегических спонсоров. Будем рады обсудить детали сотрудничества!
+    """)
+    
+    st.button("Связаться с командой")
