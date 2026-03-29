@@ -5,12 +5,12 @@ import time
 # --- НАСТРОЙКИ СТРАНИЦЫ ---
 st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
-# CSS для объемных вкладок и центрирования
+# CSS для дизайна
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     
-    /* ЛОГОТИП: сохранение пропорций */
+    /* ЛОГОТИП */
     [data-testid="column"] img {
         max-width: 200px !important;
         object-fit: contain !important;
@@ -26,9 +26,7 @@ st.markdown("""
         border: 1px solid #3b82f6 !important;
         border-radius: 8px 8px 0px 0px !important;
         padding: 10px 30px !important;
-        height: auto !important;
         transition: all 0.3s ease;
-        box-shadow: 0px -4px 10px rgba(0,0,0,0.3);
     }
     .stTabs [data-baseweb="tab"] p {
         font-size: 20px !important;
@@ -37,10 +35,9 @@ st.markdown("""
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
         background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%) !important;
-        box-shadow: 0px 4px 15px rgba(59, 130, 246, 0.5) !important;
     }
 
-    /* ЦЕНТРИРОВАНИЕ ТЕКСТА НАД ФОТО */
+    /* ЗАГОЛОВКИ НАД ФОТО */
     .img-label {
         text-align: center;
         font-size: 18px;
@@ -48,18 +45,15 @@ st.markdown("""
         margin-bottom: 8px;
         color: #ffffff;
         display: block;
-        width: 100%;
         text-transform: uppercase;
-        letter-spacing: 1px;
     }
 
-    /* ФОТО */
-    [data-testid="stImage"] img {
-        max-height: 320px !important;
-        border-radius: 8px;
-        margin: auto;
-        display: block;
-        border: 1px solid #2e3b4e;
+    /* СТИЛЬ ДЛЯ ВЫТЯНУТОГО ФОТО КОМАНДЫ */
+    .team-img img {
+        max-height: 600px !important; /* Увеличили высоту */
+        object-fit: cover !important;
+        border-radius: 12px;
+        border: 1px solid #3b82f6;
     }
 
     /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
@@ -69,36 +63,17 @@ st.markdown("""
         border-radius: 10px;
         padding: 15px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .custom-label {
-        color: #94a3b8 !important;
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        text-transform: uppercase;
-        display: block;
-        margin-bottom: 5px;
-    }
-    .custom-value {
-        color: #ffffff !important;
-        font-size: 34px !important;
-        font-weight: 900 !important;
-        display: block;
-    }
+    .custom-label { color: #94a3b8; font-size: 14px; text-transform: uppercase; display: block; }
+    .custom-value { color: #ffffff; font-size: 34px; font-weight: 900; display: block; }
 
-    /* DISCLAIMER STYLE */
     .estimation-disclaimer {
         text-align: center;
         color: #94a3b8;
         font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-top: 1px solid #1c2533;
         font-style: italic;
+        margin-bottom: 15px;
     }
-
-    .block-container { padding-top: 1.5rem !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -118,11 +93,8 @@ tab_diag, tab_info, tab_team = st.tabs(["DIAGNOSTICS", "KVASIR DATABASE", "ABOUT
 
 with tab_diag:
     uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'png', 'jpeg'], label_visibility="collapsed")
-
     if uploaded_file:
         img = Image.open(uploaded_file)
-        
-        # Сетка 1x2 для фото
         c1, c2 = st.columns(2)
         with c1:
             st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
@@ -151,45 +123,35 @@ with tab_info:
     st.markdown("""
     **Kvasir** — это передовой мультиклассовый набор данных для обнаружения заболеваний ЖКТ. 
     Данные собраны в Vestre Viken Health Trust (Норвегия) и верифицированы опытными врачами-эндоскопистами.
-    
-    ### Состав и структура данных:
-    * **Источник:** Данные собраны в Vestre Viken Health Trust (Норвегия) и аннотированы опытными врачами-эндоскопистами.
-    * **Классификация:** Датасет включает в себя 3 типа анатомических ориентиров (Z-line, Pylorus, Cecum) и 3 клинически важных находки (Polyp, Esophagitis, Ulcerative Colitis).
-    * **Удаление полипов:** Отдельные категории для контроля качества процедур удаления (EMR), такие как "окрашенные и поднятые полипы".
     """)
     st.info("Dataset Source: Vestre Viken Health Trust & Oslo University Hospital.")
 
 with tab_team:
     st.header("iGEM Nazarbayev University Team")
-
-    # Создаем две колонки: левая для текста, правая для фото
-    text_col, photo_col = st.columns([2, 1])
+    text_col, photo_col = st.columns([1.5, 1])
 
     with text_col:
         st.markdown("""
-        **Биологическая научная сборная iGEM Назарбаев Университета (НУ)** предлагает рассмотреть возможность сотрудничества и спонсорской поддержки нашего проекта в области синтетической биологии.
-
-        ### Международное признание
-        С **28 по 31 октября** наша команда будет представлять Казахстан на международном финале **iGEM в Париже** — одном из самых престижных мировых соревнований в сфере биологии, объединяющем более 400 команд ведущих университетов мира. 
+        ### Наш проект и мировое признание
         
-        На протяжении **12 лет** сборная НУ ежегодно представляет страну и Центральную Азию на международной арене, завоевав:
-        * **6 золотых медалей**
-        * **2 серебряные медали**
-        * **2 бронзовые медали**
-
-        ### Наш проект 2024
-        В этом году мы разрабатываем **доступный биосенсор** для диагностики колоректального рака на основе генетически модифицированной бактерии *E. coli*. 
+        **Биологическая научная сборная iGEM Назарбаев Университета (НУ)** — это команда молодых ученых, представляющая Казахстан и Центральную Азию на международной арене уже 12 лет. За это время мы завоевали **6 золотых**, **2 серебряные** и **2 бронзовые медали**, подтверждая высокий уровень отечественной науки.
         
-        * **Технология:** выявление путресцина – биомаркера, концентрация которого значительно повышается при развитии опухоли. 
-        * **Цель:** создание простой, быстрой и экономически эффективной системы ранней диагностики.
+        В 2024 году мы представляем наш проект на международном финале **iGEM в Париже**, соревнуясь с более чем 400 ведущими университетами мира.
+        
+        **Разработка:** Мы создаем доступный биосенсор для ранней диагностики колоректального рака на основе генетически модифицированной бактерии *E. coli*. Технология выявляет путресцин — ключевой биомаркер, концентрация которого резко возрастает при развитии опухоли. Наша цель — сделать высокоточную диагностику простой, быстрой и экономически эффективной.
 
-        ### Спонсорство
-        Для реализации следующего этапа проекта, включая участие в финале и дальнейшую разработку, нам необходима поддержка стратегических спонсоров. Будем рады обсудить детали сотрудничества!
+        ### Контакты
+        По вопросам сотрудничества и техническим деталям проекта вы можете связаться с нами напрямую:
+        
+        **Email:** [igem@nu.edu.kz](mailto:igem@nu.edu.kz)
         """)
-        st.button("Связаться с командой")
+        
+        st.link_button("Написать нам", "mailto:igem@nu.edu.kz")
 
     with photo_col:
+        st.markdown('<div class="team-img">', unsafe_allow_html=True)
         try:
-            st.image("team_photo.png", caption="iGEM Nazarbayev University Team", use_container_width=True)
+            st.image("team_photo.png", use_container_width=True)
         except:
-            st.warning("Файл team_photo.png не найден. Пожалуйста, добавьте его в папку с проектом.")
+            st.warning("Добавьте файл team_photo.png в папку проекта")
+        st.markdown('</div>', unsafe_allow_html=True)
