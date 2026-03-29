@@ -37,16 +37,16 @@ st.markdown("""
         background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%) !important;
     }
 
-    /* ЗАГОЛОВКИ НАД ФОТО */
+    /* ЗАГОЛОВКИ НАД ФОТО (Теперь в тон основному тексту) */
     .img-label {
         text-align: center;
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 16px;
+        font-weight: 600;
         margin-bottom: 12px;
-        color: #3b82f6;
+        color: #e6edf3; /* Тот же цвет, что и основной текст сайта */
         display: block;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
 
     /* СТИЛЬ ДЛЯ ВЫТЯНУТОГО ФОТО КОМАНДЫ */
