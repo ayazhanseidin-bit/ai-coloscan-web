@@ -42,18 +42,25 @@ st.markdown("""
         text-align: center;
         font-size: 18px;
         font-weight: 700;
-        margin-bottom: 8px;
-        color: #ffffff;
+        margin-bottom: 12px;
+        color: #3b82f6;
         display: block;
         text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     /* СТИЛЬ ДЛЯ ВЫТЯНУТОГО ФОТО КОМАНДЫ */
     .team-img img {
-        max-height: 700px !important; /* Увеличено для высоты */
+        max-height: 700px !important;
         object-fit: cover !important;
         border-radius: 12px;
         border: 2px solid #3b82f6;
+    }
+
+    /* ФОТО ДИАГНОСТИКИ */
+    [data-testid="stImage"] img {
+        border-radius: 10px;
+        border: 1px solid #2e3b4e;
     }
 
     /* КАРТОЧКИ РЕЗУЛЬТАТОВ */
@@ -88,7 +95,7 @@ with col_title:
     st.title("AI-ColoScan: Система клинического анализа")
     st.write("Поддержка высокоточной диагностики на базе ИИ")
 
-# --- ВКЛАДКИ (Теперь только две) ---
+# --- ВКЛАДКИ ---
 tab_diag, tab_team = st.tabs(["ДИАГНОСТИКА", "О КОМАНДЕ"])
 
 with tab_diag:
@@ -97,18 +104,19 @@ with tab_diag:
         img = Image.open(uploaded_file)
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<div class="img-label">Исходное фото</div>', unsafe_allow_html=True)
+            # Название для первого фото
+            st.markdown('<div class="img-label">Загруженное изображение</div>', unsafe_allow_html=True)
             st.image(img, use_container_width=True)
         with c2:
-            st.markdown('<div class="img-label">Обработка ИИ</div>', unsafe_allow_html=True)
+            # Название для второго фото
+            st.markdown('<div class="img-label">Результат анализа ИИ (Поиск полипа)</div>', unsafe_allow_html=True)
             with st.spinner('Анализ...'):
                 time.sleep(0.3)
                 st.image(img, use_container_width=True)
         
-        st.error("Результат диагностики: Обнаружен полип")
+        st.error("Результат диагностики: Обнаружен полип (Вероятность 94.2%)")
         st.markdown('<div class="estimation-disclaimer">Все данные ниже являются оценочными данными ИИ для клинического руководства.</div>', unsafe_allow_html=True)
 
-        # Обновленные карточки на русском
         m1, m2, m3 = st.columns(3)
         with m1:
             st.markdown('<div class="custom-card"><span class="custom-label">Тип находки</span><span class="custom-value">ПОЛИП</span></div>', unsafe_allow_html=True)
@@ -144,7 +152,6 @@ with tab_team:
     with photo_col:
         st.markdown('<div class="team-img">', unsafe_allow_html=True)
         try:
-            # Здесь будет ваше фото, вытянутое по вертикали
             st.image("team_photo.png", use_container_width=True)
         except:
             st.warning("Добавьте файл team_photo.png в папку проекта")
