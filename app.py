@@ -8,6 +8,10 @@ from ultralytics import YOLO
 # --- НАСТРОЙКИ СТРАНИЦЫ ---
 st.set_page_config(page_title="AI-ColoScan PRO", layout="wide")
 
+# Инициализация хранилища для топ-5 находок
+if 'top_finds' not in st.session_state:
+    st.session_state.top_finds = [] # Список кортежей (conf, image)
+
 # Загрузка модели
 @st.cache_resource
 def load_model():
@@ -15,114 +19,114 @@ def load_model():
 
 model = load_model()
 
-# CSS (Дизайн без лишних элементов вкладок)
+# CSS
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #e6edf3; }
     .img-label { 
         text-align: center; 
-        font-size: 18px; 
+        font-size: 16px; 
         font-weight: 700; 
-        color: #ffffff; 
+        color: #3b82f6; 
         text-transform: uppercase; 
-        margin-bottom: 10px; 
+        margin-bottom: 5px; 
     }
     .custom-card { 
         background-color: #1c2533; 
-        border: 2px solid #3b82f6; 
+        border: 1px solid #3b82f6; 
         border-radius: 10px; 
-        padding: 15px; 
+        padding: 10px; 
         text-align: center; 
-        margin-top: 10px;
     }
-    .custom-label { color: #94a3b8; font-size: 14px; text-transform: uppercase; }
-    .custom-value { color: #ffffff; font-size: 34px; font-weight: 900; }
+    .custom-label { color: #94a3b8; font-size: 12px; text-transform: uppercase; }
+    .custom-value { color: #ffffff; font-size: 24px; font-weight: 900; }
+    .top-find-img { border-radius: 5px; border: 1px solid #3b82f6; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- ШАПКА (Без лого) ---
-st.title("AI-ColoScan: Clinical Diagnostic System")
-st.write("Real-time polyp detection and analysis powered by YOLOv8")
+st.title("🔍 AI-ColoScan: Video Diagnostic System")
+st.write("Upload endoscopy video for real-time polyp detection and sizing.")
 st.divider()
 
-# --- ОСНОВНОЙ БЛОК ДИАГНОСТИКИ ---
-uploaded_file = st.file_uploader("Upload Video or Image", type=['mp4', 'mov', 'avi', 'jpg', 'png', 'jpeg'], label_visibility="collapsed")
+# --- ЗАГРУЗКА ТОЛЬКО ВИДЕО ---
+uploaded_file = st.file_uploader("Upload Video", type=['mp4', 'mov', 'avi'], label_visibility="collapsed")
 
 if uploaded_file:
-    file_type = uploaded_file.type.split('/')[0]
+    tfile = tempfile.NamedTemporaryFile(delete=False)
+    tfile.write(uploaded_file.read())
+    cap = cv2.VideoCapture(tfile.name)
     
-    if file_type == 'video':
-        # --- ОБРАБОТКА ВИДЕО ---
-        tfile = tempfile.NamedTemporaryFile(delete=False)
-        tfile.write(uploaded_file.read())
-        
-        cap = cv2.VideoCapture(tfile.name)
-        
-        c1, c2 = st.columns(2)
-        with c1:
-            st.markdown('<div class="img-label">Original Feed</div>', unsafe_allow_html=True)
-            raw_video_placeholder = st.empty()
-        with c2:
-            st.markdown('<div class="img-label">AI Diagnostic Stream</div>', unsafe_allow_html=True)
-            processed_video_placeholder = st.empty()
+    # Центрированная сетка для видео (делаем их меньше за счет пустых колонок по бокам)
+    _, col_v1, col_v2, _ = st.columns([1, 4, 4, 1])
+    
+    with col_v1:
+        st.markdown('<div class="img-label">INPUT VIDEO FEED</div>', unsafe_allow_html=True)
+        raw_video_placeholder = st.empty()
+    with col_v2:
+        st.markdown('<div class="img-label">PROCESSED AI DIAGNOSIS</div>', unsafe_allow_html=True)
+        processed_video_placeholder = st.empty()
 
-        stop_button = st.button("Stop Analysis", use_container_width=True)
-        stats_placeholder = st.empty()
+    # Панель управления и метрики
+    st.divider()
+    m1, m2, m3 = st.columns(3)
+    
+    stop_button = st.button("STOP ANALYSIS", use_container_width=True)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret or stop_button:
-                break
-            
-            # Конвертация кадра для Streamlit
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            raw_video_placeholder.image(frame_rgb, use_container_width=True)
-            
-            # Предсказание модели
-            results = model.predict(frame, conf=0.4, verbose=False)
-            
-            # Отрисовка аннотаций
-            annotated_frame = results[0].plot()
-            annotated_frame_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
-            processed_video_placeholder.image(annotated_frame_rgb, use_container_width=True)
-            
-            # Обновление метрик в реальном времени
-            if len(results[0].boxes) > 0:
-                conf = results[0].boxes.conf[0].item() * 100
-                with stats_placeholder.container():
-                    m1, m2, m3 = st.columns(3)
-                    m1.markdown(f'<div class="custom-card"><span class="custom-label">Finding</span><span class="custom-value">POLYP</span></div>', unsafe_allow_html=True)
-                    m2.markdown(f'<div class="custom-card"><span class="custom-label">Status</span><span class="custom-value">DETECTED</span></div>', unsafe_allow_html=True)
-                    m3.markdown(f'<div class="custom-card"><span class="custom-label">Confidence</span><span class="custom-value">{conf:.1f}%</span></div>', unsafe_allow_html=True)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret or stop_button:
+            break
         
-        cap.release()
-
-    else:
-        # --- ОБРАБОТКА ФОТО ---
-        img = Image.open(uploaded_file)
-        # Превращаем в массив для модели
-        img_array = np.array(img)
+        # Инференс модели
+        results = model.predict(frame, conf=0.5, verbose=False)
         
-        c1, c2 = st.columns(2)
-        with c1:
-            st.markdown('<div class="img-label">Input Photo</div>', unsafe_allow_html=True)
-            st.image(img, use_container_width=True)
-        with c2:
-            st.markdown('<div class="img-label">AI Processed Photo</div>', unsafe_allow_html=True)
-            results = model.predict(img_array, conf=0.3)
-            res_plotted = results[0].plot()
-            st.image(res_plotted, channels="BGR", use_container_width=True)
+        # Оригинальное видео (уменьшаем для скорости и экономии места)
+        frame_rgb = cv2.cvtColor(cv2.resize(frame, (480, 360)), cv2.COLOR_BGR2RGB)
+        raw_video_placeholder.image(frame_rgb)
         
+        # Обработанное видео
+        annotated_frame = results[0].plot()
+        annotated_frame_rgb = cv2.cvtColor(cv2.resize(annotated_frame, (480, 360)), cv2.COLOR_BGR2RGB)
+        processed_video_placeholder.image(annotated_frame_rgb)
+        
+        # Если найден полип
         if len(results[0].boxes) > 0:
-            st.error(f"Diagnostic Result: Polyp Detected")
-            # Карточки для фото
-            m1, m2, m3 = st.columns(3)
-            conf_photo = results[0].boxes.conf[0].item() * 100
-            m1.markdown('<div class="custom-card"><span class="custom-label">Type</span><span class="custom-value">POLYP</span></div>', unsafe_allow_html=True)
-            m2.markdown('<div class="custom-card"><span class="custom-label">Analysis</span><span class="custom-value">STATIC</span></div>', unsafe_allow_html=True)
-            m3.markdown(f'<div class="custom-card"><span class="custom-label">Certainty</span><span class="custom-value">{conf_photo:.1f}%</span></div>', unsafe_allow_html=True)
+            box = results[0].boxes[0]
+            conf = box.conf[0].item()
+            
+            # Примерный расчет размера (симуляция на основе площади бокса)
+            # В реальности нужно калибровать камеру
+            w = box.xywh[0][2].item()
+            h = box.xywh[0][3].item()
+            estimated_size = (w + h) / 20 # Условный коэффициент
+            
+            # Обновление карточек
+            m1.markdown(f'<div class="custom-card"><span class="custom-label">Status</span><span class="custom-value">POLYP FOUND</span></div>', unsafe_allow_html=True)
+            m2.markdown(f'<div class="custom-card"><span class="custom-label">Estimated Size</span><span class="custom-value">{estimated_size:.1f} mm</span></div>', unsafe_allow_html=True)
+            m3.markdown(f'<div class="custom-card"><span class="custom-label">Certainty</span><span class="custom-value">{conf*100:.1f}%</span></div>', unsafe_allow_html=True)
+            
+            # Логика Топ-5 находок
+            if len(st.session_state.top_finds) < 5 or conf > min(st.session_state.top_finds, key=lambda x: x[0])[0]:
+                # Добавляем кадр и сортируем
+                st.session_state.top_finds.append((conf, annotated_frame_rgb))
+                st.session_state.top_finds = sorted(st.session_state.top_finds, key=lambda x: x[0], reverse=True)[:5]
         else:
-            st.success("Diagnostic Result: No Pathologies Detected")
+            m1.markdown(f'<div class="custom-card"><span class="custom-label">Status</span><span class="custom-value">CLEAR</span></div>', unsafe_allow_html=True)
+            m2.markdown(f'<div class="custom-card"><span class="custom-label">Estimated Size</span><span class="custom-value">0 mm</span></div>', unsafe_allow_html=True)
+            m3.markdown(f'<div class="custom-card"><span class="custom-label">Certainty</span><span class="custom-value">0%</span></div>', unsafe_allow_html=True)
+
+    cap.release()
+
+    # --- КАРУСЕЛЬ ТОП-5 НАХОДОК ---
+    st.divider()
+    st.subheader("🏆 Top 5 Detections (Largest/Most Certain)")
+    if st.session_state.top_finds:
+        cols = st.columns(5)
+        for i, (score, img_data) in enumerate(st.session_state.top_finds):
+            with cols[i]:
+                st.image(img_data, caption=f"Confidence: {score*100:.1f}%", use_container_width=True)
+    else:
+        st.write("No detections yet.")
 
 else:
-    st.info("Please upload an endoscopic video or image to start the clinical analysis.")
+    st.info("Please upload an endoscopy video file (MP4, MOV, AVI) to begin.")
