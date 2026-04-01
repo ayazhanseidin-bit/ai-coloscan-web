@@ -44,7 +44,7 @@ with col_title:
     st.write("Polyp detection ")
 
 # --- ВКЛАДКИ ---
-tab_diag, tab_info, tab_team = st.tabs(["DIAGNOSTICS", "KVASIR DATABASE", "ABOUT TEAM"])
+tab_diag= st.tabs(["DIAGNOSTICS"])
 
 with tab_diag:
     # Теперь принимаем и видео, и фото
