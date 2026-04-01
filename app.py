@@ -38,12 +38,10 @@ st.markdown("""
 
 # --- ШАПКА ---
 col_logo, col_title = st.columns([1, 4])
-with col_logo:
-    try: st.image("logo.png")
-    except: st.write("iGEM NU")
+
 with col_title:
     st.title("AI-ColoScan: Video Analysis System")
-    st.write("Real-time polyp detection powered by YOLOv8 & Kvasir")
+    st.write("Polyp detection ")
 
 # --- ВКЛАДКИ ---
 tab_diag, tab_info, tab_team = st.tabs(["DIAGNOSTICS", "KVASIR DATABASE", "ABOUT TEAM"])
@@ -124,11 +122,4 @@ with tab_diag:
     else:
         st.info("Please upload an endoscopic video or image to start.")
 
-# Остальные вкладки (без изменений)
-with tab_info:
-    st.header("Kvasir Dataset Information")
-    st.write("The system utilizes models trained on the Kvasir-SEG dataset for high-fidelity segmentation.")
 
-with tab_team:
-    st.subheader("iGEM Nazarbayev University")
-    st.write("Innovative medical AI solutions.")
